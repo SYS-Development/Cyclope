@@ -21,7 +21,6 @@
 
 #include <Arduino.h>
 
-// Register map
 enum {
     NRF24L01_00_CONFIG      = 0x00,
     NRF24L01_01_EN_AA       = 0x01,
@@ -49,7 +48,6 @@ enum {
     NRF24L01_17_FIFO_STATUS = 0x17,
     NRF24L01_1C_DYNPD       = 0x1C,
     NRF24L01_1D_FEATURE     = 0x1D,
-    //Instructions
     NRF24L01_61_RX_PAYLOAD  = 0x61,
     NRF24L01_A0_TX_PAYLOAD  = 0xA0,
     NRF24L01_E1_FLUSH_TX    = 0xE1,
@@ -67,7 +65,6 @@ enum {
     NRF24L01_A8_W_ACK_PAYLOAD5 = 0xAD,
 };
 
-// Bit mnemonics
 enum {
     NRF24L01_00_MASK_RX_DR  = 6,
     NRF24L01_00_MASK_TX_DS  = 5,
@@ -86,7 +83,6 @@ enum {
     NRF2401_1D_EN_DPL       = 2,
 };
 
-// Bitrates
 enum {
     NRF24L01_BR_1M = 0,
     NRF24L01_BR_2M,
@@ -100,8 +96,6 @@ enum TXRX_State {
     RX_EN,
 };
 
-// RF Tx Power (estimations with RFX2401C PA)
-// RFX2401C power amp is ~+25dB (saturates at 22dBm) so:
 enum TX_Power {
     TX_POWER_5mW = 0, // -18+25  =  7dBm ~= 5mW 
     TX_POWER_20mW,    // -12+25  = 13dBm ~= 20mW
@@ -109,7 +103,6 @@ enum TX_Power {
     TX_POWER_158mW    // +25(sat)= 22dBm ~= 158mW
 };
 
-/* Instruction Mnemonics */
 #define R_REGISTER    0x00
 #define W_REGISTER    0x20
 #define REGISTER_MASK 0x1F

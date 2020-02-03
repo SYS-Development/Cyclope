@@ -92,7 +92,7 @@ void SYMAX_build_packet_x5c(uint8_t bind)
             packet[3] = map(ppm[AILERON], PPM_MID, PPM_MIN, 0x00, 0x7F);
         else
             packet[3] = map(ppm[AILERON], PPM_MID, PPM_MAX, 0x80, 0xFF);
-        packet[4] = X5C_CHAN2TRIM(packet[1] ^ 0x80);     // drive trims for extra control range
+        packet[4] = X5C_CHAN2TRIM(packet[1] ^ 0x80);     
         packet[5] = X5C_CHAN2TRIM(packet[2] ^ 0x80);
         packet[6] = X5C_CHAN2TRIM(packet[3] ^ 0x80);
         packet[7] = 0xae;
@@ -105,7 +105,7 @@ void SYMAX_build_packet_x5c(uint8_t bind)
         packet[14] = GET_FLAG(AUX4, 0x10)
                    | GET_FLAG(AUX3, 0x08)
                    | GET_FLAG(AUX2, 0x01)
-                   | 0x04; // always high rates (bit 3 is rate control)
+                   | 0x04; 
         packet[15] = SYMAX_checksum(packet);
     }
 }
@@ -156,8 +156,7 @@ void SYMAX_build_packet(uint8_t bind)
             packet[4] |= SYMAX_FLAG_VIDEO;
         if(ppm[AUX3] > PPM_MAX_COMMAND)
             packet[4] |= SYMAX_FLAG_PICTURE;
-        // use trims to extend controls
-        packet[5] = (packet[1] >> 2) | 0xc0;  // always high rates (bit 7 is rate control)
+        packet[5] = (packet[1] >> 2) | 0xc0;  
         packet[6] = (packet[2] >> 2);
         packet[7] = (packet[3] >> 2);
         if(ppm[AUX2] > PPM_MAX_COMMAND)
@@ -176,7 +175,6 @@ void SYMAX_send_packet(uint8_t bind)
     else
         SYMAX_build_packet(bind);
     
-    // clear packet status bits and TX FIFO
     NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x70);
     NRF24L01_WriteReg(NRF24L01_00_CONFIG, 0x2e);
     NRF24L01_WriteReg(NRF24L01_05_RF_CH, SymaX_hopping_frequency[SymaX_hopping_frequency_no]);
@@ -194,10 +192,10 @@ void init_Symax()
     NRF24L01_SetTxRxMode(TX_EN);
     NRF24L01_ReadReg(NRF24L01_07_STATUS);
     NRF24L01_WriteReg(NRF24L01_00_CONFIG, _BV(NRF24L01_00_EN_CRC) | _BV(NRF24L01_00_CRCO));
-    NRF24L01_WriteReg(NRF24L01_01_EN_AA, 0x00);      // No Auto Acknoledgement
-    NRF24L01_WriteReg(NRF24L01_02_EN_RXADDR, 0x3F);  // Enable all data pipes (even though not used?)
-    NRF24L01_WriteReg(NRF24L01_03_SETUP_AW, 0x03);   // 5-byte RX/TX address
-    NRF24L01_WriteReg(NRF24L01_04_SETUP_RETR, 0xff); // 4mS retransmit t/o, 15 tries (retries w/o AA?)
+    NRF24L01_WriteReg(NRF24L01_01_EN_AA, 0x00);      
+    NRF24L01_WriteReg(NRF24L01_02_EN_RXADDR, 0x3F);  
+    NRF24L01_WriteReg(NRF24L01_03_SETUP_AW, 0x03);   
+    NRF24L01_WriteReg(NRF24L01_04_SETUP_RETR, 0xff); 
     NRF24L01_WriteReg(NRF24L01_05_RF_CH, 0x08);
     if (current_protocol==PROTO_SYMAXOLD)
     {
@@ -210,35 +208,32 @@ void init_Symax()
         SymaX_packet_length = 10;
     }
     NRF24L01_SetPower(RF_POWER);
-    NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x70);     // Clear data ready, data sent, and retransmit
+    NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x70);     
     NRF24L01_WriteReg(NRF24L01_08_OBSERVE_TX, 0x00);
     NRF24L01_WriteReg(NRF24L01_09_CD, 0x00);
-    NRF24L01_WriteReg(NRF24L01_0C_RX_ADDR_P2, 0xC3); // LSB byte of pipe 2 receive address
+    NRF24L01_WriteReg(NRF24L01_0C_RX_ADDR_P2, 0xC3); 
     NRF24L01_WriteReg(NRF24L01_0D_RX_ADDR_P3, 0xC4);
     NRF24L01_WriteReg(NRF24L01_0E_RX_ADDR_P4, 0xC5);
     NRF24L01_WriteReg(NRF24L01_0F_RX_ADDR_P5, 0xC6);
-    NRF24L01_WriteReg(NRF24L01_11_RX_PW_P0, SYMAX_PAYLOADSIZE);   // bytes of data payload for pipe 1
+    NRF24L01_WriteReg(NRF24L01_11_RX_PW_P0, SYMAX_PAYLOADSIZE);   
     NRF24L01_WriteReg(NRF24L01_12_RX_PW_P1, SYMAX_PAYLOADSIZE);
     NRF24L01_WriteReg(NRF24L01_13_RX_PW_P2, SYMAX_PAYLOADSIZE);
     NRF24L01_WriteReg(NRF24L01_14_RX_PW_P3, SYMAX_PAYLOADSIZE);
     NRF24L01_WriteReg(NRF24L01_15_RX_PW_P4, SYMAX_PAYLOADSIZE);
     NRF24L01_WriteReg(NRF24L01_16_RX_PW_P5, SYMAX_PAYLOADSIZE);
-    NRF24L01_WriteReg(NRF24L01_17_FIFO_STATUS, 0x00); // Just in case, no real bits to write here
-
+    NRF24L01_WriteReg(NRF24L01_17_FIFO_STATUS, 0x00); 
     NRF24L01_WriteRegisterMulti(NRF24L01_10_TX_ADDR , current_protocol==PROTO_SYMAXOLD ? (uint8_t *)"\x6D\x6A\x73\x73\x73" : (uint8_t *)"\xAB\xAC\xAD\xAE\xAF" ,5);
-
     NRF24L01_ReadReg(NRF24L01_07_STATUS);
     NRF24L01_FlushTx();
     NRF24L01_ReadReg(NRF24L01_07_STATUS);
     NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x0e);
     NRF24L01_ReadReg(NRF24L01_00_CONFIG);
     NRF24L01_WriteReg(NRF24L01_00_CONFIG, 0x0c);
-    NRF24L01_WriteReg(NRF24L01_00_CONFIG, 0x0e);  // power on
+    NRF24L01_WriteReg(NRF24L01_00_CONFIG, 0x0e);  
 }
 
 void symax_init1()
 {
-    // duplicate stock tx sending strange packet (effect unknown)
     uint8_t first_packet[] = {0xf9, 0x96, 0x82, 0x1b, 0x20, 0x08, 0x08, 0xf2, 0x7d, 0xef, 0xff, 0x00, 0x00, 0x00, 0x00};
     uint8_t chans_bind[] = {0x4b, 0x30, 0x40, 0x20};
     uint8_t chans_bind_x5c[] = {0x27, 0x1b, 0x39, 0x28, 0x24, 0x22, 0x2e, 0x36,
@@ -250,7 +245,7 @@ void symax_init1()
     
     for(uint8_t i=0; i<4; i++)
         SymaX_rx_tx_addr[i] = transmitterID[i];
-    SymaX_rx_tx_addr[4] = 0xa2; // this is constant in ID
+    SymaX_rx_tx_addr[4] = 0xa2; 
     
     if (current_protocol==PROTO_SYMAXOLD)
     {
@@ -266,7 +261,6 @@ void symax_init1()
     Symax_packet_counter = 0;
 }
 
-// channels determined by last byte of tx address
 void symax_set_channels(uint8_t address)
 {
     static const uint8_t start_chans_1[] = {0x0a, 0x1a, 0x2a, 0x3a};
@@ -275,7 +269,7 @@ void symax_set_channels(uint8_t address)
 
     uint8_t laddress = address & 0x1f;
     uint8_t i;
-    uint32_t *pchans = (uint32_t *)SymaX_hopping_frequency;   // avoid compiler warning
+    uint32_t *pchans = (uint32_t *)SymaX_hopping_frequency;   
 
     SymaX_rf_ch_num = 4;
 

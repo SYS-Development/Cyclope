@@ -61,15 +61,15 @@ void CyclopeRX_init()
   XN297_SetTXAddr(bind_address, CyclopeRX_ADDRESS_LENGTH);
   NRF24L01_FlushTx();
   NRF24L01_FlushRx();
-  NRF24L01_WriteReg(NRF24L01_01_EN_AA, 0x00);      // No Auto Acknowldgement on all data pipes
+  NRF24L01_WriteReg(NRF24L01_01_EN_AA, 0x00);      
   NRF24L01_WriteReg(NRF24L01_02_EN_RXADDR, 0x01);
   NRF24L01_WriteReg(NRF24L01_03_SETUP_AW, 0x03);
   NRF24L01_WriteReg(NRF24L01_11_RX_PW_P0, CyclopeRX_PACKET_SIZE);
-  NRF24L01_WriteReg(NRF24L01_04_SETUP_RETR, 0x00); // no retransmits
-  NRF24L01_SetBitrate(NRF24L01_BR_1M);             // 1Mbps
+  NRF24L01_WriteReg(NRF24L01_04_SETUP_RETR, 0x00); 
+  NRF24L01_SetBitrate(NRF24L01_BR_1M);             
   NRF24L01_SetPower(RF_POWER);
-  NRF24L01_Activate(0x73);                         // Activate feature register
-  NRF24L01_WriteReg(NRF24L01_1C_DYNPD, 0x00);      // Disable dynamic payload length on all pipes
+  NRF24L01_Activate(0x73);                         
+  NRF24L01_WriteReg(NRF24L01_1C_DYNPD, 0x00);      
   NRF24L01_WriteReg(NRF24L01_1D_FEATURE, 0x01);
   NRF24L01_Activate(0x73);
   delay(150);
@@ -163,12 +163,10 @@ static uint8_t CyclopeRX_check_rx()
     NRF24L01_WriteReg(NRF24L01_07_STATUS, 0xff);
 
     NRF24L01_FlushRx();
-    // decode data , check sum is ok as well, since there is no crc
     if (packet[0] == 0x85 && packet[14] == CyclopeRX_checksum()) {
-      // uncompensated battery volts*100
       CyclopeRX_telemetry_count++;
       return 1;
-    }                       // end telemetry received
+    }                       
   }
   return 0;
 }

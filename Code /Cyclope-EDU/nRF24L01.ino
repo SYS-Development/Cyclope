@@ -69,7 +69,7 @@ uint8_t NRF24L01_WritePayload(uint8_t *data, uint8_t length)
     for(uint8_t i=0; i<length; i++)
         spi_write(data[i]);
     CS_on;
-    CE_on; // transmit
+    CE_on; 
     return 1;
 }
 
@@ -77,7 +77,7 @@ uint8_t NRF24L01_ReadPayload(uint8_t *data, uint8_t length)
 {
     uint8_t i;
     CS_off;
-    spi_write(R_RX_PAYLOAD); // Read RX payload
+    spi_write(R_RX_PAYLOAD); 
     for (i=0;i<length;i++) {
         data[i]=spi_read();
     }
@@ -106,29 +106,29 @@ void NRF24L01_SetTxRxMode(enum TXRX_State mode)
 {
     if(mode == TX_EN) {
         CE_off;
-        NRF24L01_WriteReg(NRF24L01_07_STATUS, (1 << NRF24L01_07_RX_DR)    //reset the flag(s)
+        NRF24L01_WriteReg(NRF24L01_07_STATUS, (1 << NRF24L01_07_RX_DR)    
                                             | (1 << NRF24L01_07_TX_DS)
                                             | (1 << NRF24L01_07_MAX_RT));
-        NRF24L01_WriteReg(NRF24L01_00_CONFIG, (1 << NRF24L01_00_EN_CRC)   // switch to TX mode
+        NRF24L01_WriteReg(NRF24L01_00_CONFIG, (1 << NRF24L01_00_EN_CRC)   
                                             | (1 << NRF24L01_00_CRCO)
                                             | (1 << NRF24L01_00_PWR_UP));
         delayMicroseconds(130);
         CE_on;
     } else if (mode == RX_EN) {
         CE_off;
-        NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x70);        // reset the flag(s)
-        NRF24L01_WriteReg(NRF24L01_00_CONFIG, 0x0F);        // switch to RX mode
-        NRF24L01_WriteReg(NRF24L01_07_STATUS, (1 << NRF24L01_07_RX_DR)    //reset the flag(s)
+        NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x70);        
+        NRF24L01_WriteReg(NRF24L01_00_CONFIG, 0x0F);        
+        NRF24L01_WriteReg(NRF24L01_07_STATUS, (1 << NRF24L01_07_RX_DR)    
                                             | (1 << NRF24L01_07_TX_DS)
                                             | (1 << NRF24L01_07_MAX_RT));
-        NRF24L01_WriteReg(NRF24L01_00_CONFIG, (1 << NRF24L01_00_EN_CRC)   // switch to RX mode
+        NRF24L01_WriteReg(NRF24L01_00_CONFIG, (1 << NRF24L01_00_EN_CRC)   
                                             | (1 << NRF24L01_00_CRCO)
                                             | (1 << NRF24L01_00_PWR_UP)
                                             | (1 << NRF24L01_00_PRIM_RX));
         delayMicroseconds(130);
         CE_on;
     } else {
-        NRF24L01_WriteReg(NRF24L01_00_CONFIG, (1 << NRF24L01_00_EN_CRC)); //PowerDown
+        NRF24L01_WriteReg(NRF24L01_00_CONFIG, (1 << NRF24L01_00_EN_CRC)); 
         CE_off;
     }
 }
@@ -151,12 +151,6 @@ uint8_t NRF24L01_SetPower(enum TX_Power power)
 
 uint8_t NRF24L01_SetBitrate(uint8_t bitrate)
 {
-    // Note that bitrate 250kbps (and bit RF_DR_LOW) is valid only
-    // for nRF24L01+. There is no way to programmatically tell it from
-    // older version, nRF24L01, but the older is practically phased out
-    // by Nordic, so we assume that we deal with with modern version.
-
-    // Bit 0 goes to RF_DR_HIGH, bit 1 - to RF_DR_LOW
     rf_setup = (rf_setup & 0xD7) | ((bitrate & 0x02) << 4) | ((bitrate & 0x01) << 3);
     return NRF24L01_WriteReg(NRF24L01_06_RF_SETUP, rf_setup);
 }

@@ -64,7 +64,7 @@ void XN297_SetTXAddr(const uint8_t* addr, uint8_t len)
 {
     if (len > 5) len = 5;
     if (len < 3) len = 3;
-    uint8_t buf[] = { 0x55, 0x0F, 0x71, 0x0C, 0x00 }; // bytes for XN297 preamble 0xC710F55 (28 bit)
+    uint8_t buf[] = { 0x55, 0x0F, 0x71, 0x0C, 0x00 }; 
     xn297_addr_len = len;
     if (xn297_addr_len < 4) {
         for (uint8_t i = 0; i < 4; ++i) {
@@ -73,11 +73,6 @@ void XN297_SetTXAddr(const uint8_t* addr, uint8_t len)
     }
     NRF24L01_WriteReg(NRF24L01_03_SETUP_AW, len-2);
     NRF24L01_WriteRegisterMulti(NRF24L01_10_TX_ADDR, buf, 5);
-    // Receive address is complicated. We need to use scrambled actual address as a receive address
-    // but the TX code now assumes fixed 4-byte transmit address for preamble. We need to adjust it
-    // first. Also, if the scrambled address begins with 1 nRF24 will look for preamble byte 0xAA
-    // instead of 0x55 to ensure enough 0-1 transitions to tune the receiver. Still need to experiment
-    // with receiving signals.
     memcpy(xn297_tx_addr, addr, len);
 }
 
@@ -108,9 +103,6 @@ uint8_t XN297_WritePayload(uint8_t* msg, uint8_t len)
     uint8_t res;
     uint8_t last = 0;
     if (xn297_addr_len < 4) {
-        // If address length (which is defined by receive address length)
-        // is less than 4 the TX address can't fit the preamble, so the last
-        // byte goes here
         buf[last++] = 0x55;
     }
     for (uint8_t i = 0; i < xn297_addr_len; ++i) {
@@ -118,7 +110,6 @@ uint8_t XN297_WritePayload(uint8_t* msg, uint8_t len)
     }
 
     for (uint8_t i = 0; i < len; ++i) {
-        // bit-reverse bytes in packet
         uint8_t b_out = bit_reverse(msg[i]);
         buf[last++] = b_out ^ xn297_scramble[xn297_addr_len+i];
     }
