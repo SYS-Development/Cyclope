@@ -57,7 +57,6 @@
 #define LOW_Pin A3
 #define HIGH_Pin A4
 #define Batt_P A7
-
 //////////////////////////////////
 
 ///////////// MPU6050 /////////////
@@ -130,8 +129,7 @@ uint8_t current_protocol;
 uint8_t packet[32];
 static bool reset = true;
 static uint16_t ppm[12] = {PPM_MIN, PPM_MIN, PPM_MIN, PPM_MIN, PPM_MID, PPM_MID,
-                           PPM_MID, PPM_MID, PPM_MID, PPM_MID, PPM_MID, PPM_MID,
-                          };
+                           PPM_MID, PPM_MID, PPM_MID, PPM_MID, PPM_MID, PPM_MID, };
 ////////////////////////////////////
 
 
@@ -141,9 +139,10 @@ unsigned long previousMillis = 0;
 const long interval = 2000;
 ///////////////////////////////////
 
+float V_Batt = 0.0;
 int POWER = 0;
-int receiver;
 int educ = 0;
+int receiver;
 
 void setup()
 {
@@ -264,3 +263,14 @@ void init_protocol()
       break;
   }
 }
+
+void battery() {
+  unsigned long currentMillis = millis();
+
+  V_Batt = ((analogRead(Batt_P) * 3.3) / 1024.0) / 0.5;
+  
+  if (V_Batt <= 3.75) {
+    digitalWrite(ledPinR, HIGH);
+  }
+}
+
