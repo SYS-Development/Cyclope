@@ -21,25 +21,6 @@ void battery() {
 
   V_Batt = ((analogRead(Batt_P) * 3.3) / 1024.0) / 0.5;
   
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-    
-    ///////////// 100% /////////////
-    if (V_Batt > 3.95) {
-      HC06.write("3");
-    }
-    ///////////////////////////////
-    ///////////// 66% /////////////
-    if ((V_Batt > 3.80) && (V_Batt < 3.95)) {
-      HC06.write("2");
-    }
-    ///////////////////////////////
-    ///////////// 33% /////////////
-    if (V_Batt < 3.8) {
-      HC06.write("1");
-    }
-    ///////////////////////////////
-  }
   /////////// WARNING ///////////
   if (V_Batt <= 3.75) {
     digitalWrite(ledPinR, HIGH);
