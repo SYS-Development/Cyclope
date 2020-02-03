@@ -18,8 +18,8 @@
 
 
 /*
- * Grâce à cette partie du code vous pourrez personnaliser la télécommande Cyclope et créer 
- * vous même votre script. Attention néanmoins à ne pas utiliser de fonction "delay()"
+ * Grâce à cette partie du code vous pouvez personnaliser la télécommande Cyclope et ainsi 
+ * créer vous même votre script. Attention néanmoins à ne pas utiliser de fonction "delay()"
  * ce qui pourrait bloquer le protocole d'emission. 
  */
 
@@ -28,14 +28,17 @@
 
 void eduselect(){
   
-  receiver = 1; // Afin d'utiliser la télécommande avec le récepteur Cyclope-RX, mettez la valeur ci-dessous (receiver) à "0".
-  educ = 0; // Afin d'utiliser la partie éducative et donc de désactiver la partie Acceleromètre, mettre la valeur educ à 1.
+  //cycloperx = 1; // Afin d'utiliser la télécommande avec le récepteur Cyclope-RX décommentez cette ligne et commentez celle ci-dessous.
+  syma = 1; // Afin d'utiliser la télécommande avec le drone SYMA décommentez cette ligne et commentez celle ci-dessus.
+  
+  educ = 1; // Afin d'utiliser la partie éducative et donc de désactiver la partie Acceleromètre, mettez la valeur educ à 1.
   
 }
 
 void edu() {
   
-  ///////////////////////Example///////////////////////
+  /////////////////////// Example 1 ///////////////////////
+  
   if (digitalRead(A_Pin) == 0) { //Lorsque le bouton A est appuyé le drone s'incline a droite
     Roll -= 5; // Plus la valeur 5 sera augmentée, plus le véhicule s'inclinera rapidement et inversement
   }
@@ -60,5 +63,6 @@ void edu() {
   if (digitalRead(C_Pin) == 1 & digitalRead(D_Pin) == 1) {
     Pitch = 1500;
   }
-   //////////////////////////////////////////////////////
+  
+   /////////////////////////////////////////////////////////
 }

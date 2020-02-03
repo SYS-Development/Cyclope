@@ -142,7 +142,8 @@ const long interval = 2000;
 float V_Batt = 0.0;
 int POWER = 0;
 int educ = 0;
-int receiver;
+int cycloperx;
+int syma;
 
 void setup()
 {
@@ -245,8 +246,8 @@ void loop()
 
 void selectProtocol()
 {
-  if (receiver == 0) current_protocol = PROTO_CyclopeRX; 
-  else if (receiver == 1) current_protocol = PROTO_SYMAX5C1; 
+  if (cycloperx == 1) current_protocol = PROTO_CyclopeRX; 
+  else if (syma == 1) current_protocol = PROTO_SYMAX5C1; 
 }
 
 void init_protocol()

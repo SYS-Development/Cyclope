@@ -157,7 +157,6 @@ static uint8_t CyclopeRX_check_rx()
 {
 
   if (NRF24L01_ReadReg(NRF24L01_07_STATUS) & _BV(NRF24L01_07_RX_DR)) {
-    // data received from aircraft
     XN297_ReadPayload(packet, CyclopeRX_PACKET_SIZE);
 
     NRF24L01_WriteReg(NRF24L01_07_STATUS, 0xff);
