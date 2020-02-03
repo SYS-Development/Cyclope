@@ -46,12 +46,11 @@ void mpu6050() {
       Roll = ypr[2] * 180 / M_PI * 1000 / 140 + 1500;
       Pitch = constrain(Pitch, 1000, 2000);
       Roll = constrain(Roll, 1000, 2000);
-
-      Throttle = map(analogRead(Throttle_P), 890, 0, 1000, 2000);
-      Yaw = map(analogRead(Yaw_P), 1023, 0, 1000, 2000);
-      Throttle = constrain(Throttle, 1000, 2000);
-      Yaw = constrain(Yaw, 1000, 2000);
     }
+    Throttle = map(analogRead(Throttle_P), 890, 0, 1000, 2000);
+    Yaw = map(analogRead(Yaw_P), 1023, 0, 1000, 2000);
+    Throttle = constrain(Throttle, 1000, 2000);
+    Yaw = constrain(Yaw, 1000, 2000);
   }
 #endif
 }
