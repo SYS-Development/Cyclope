@@ -20,7 +20,6 @@
 #include "iface_nrf24l01.h"
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
-#include <SoftwareSerial.h>
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 #include "Wire.h"
 #endif
@@ -46,25 +45,20 @@
 #define ledPinR    13 // LED  - D13
 
 #define INTERRUPT_PIN 2
-#define Yaw_P A1
-#define Throttle_P A0
 
-const int BindPin = A2;
-const int POWER_Pin = 1;
-const int C_Pin = 4;
-const int A_Pin = 22;
-const int B_Pin = 23;
-const int D_Pin = 15;
-const int LOW_Pin = A3;
-const int HIGH_Pin = A4;
-const int Batt_P = A7;
+#define Throttle_P A0
+#define Yaw_P A1
+#define BindPin  A2
+#define POWER_Pin  1
+#define C_Pin 4
+#define A_Pin 22
+#define B_Pin 23
+#define D_Pin 15
+#define LOW_Pin A3
+#define HIGH_Pin A4
+#define Batt_P A7
 
 //////////////////////////////////
-
-///////////// HC06 /////////////
-SoftwareSerial HC06(10, 11);// RX, TX
-String HC06Value = "";
-////////////////////////////////
 
 ///////////// MPU6050 /////////////
 #define OUTPUT_READABLE_YAWPITCHROLL
@@ -101,14 +95,10 @@ void dmpDataReady() {
 #define GET_FLAG(ch, mask) (ppm[ch] > PPM_MAX_COMMAND ? mask : 0)
 #define GET_FLAG_INV(ch, mask) (ppm[ch] < PPM_MIN_COMMAND ? mask : 0)
 
-int Pitch = 1500;
-int Roll = 1500;
 int Throttle;
 int Yaw = 1500;
-
-int POWER = 0;
-
-float V_Batt = 0.0;
+int Pitch = 1500;
+int Roll = 1500;
 ///////////////////////////////
 
 ///////////// NRF24L01 /////////////
@@ -143,17 +133,21 @@ static uint16_t ppm[12] = {PPM_MIN, PPM_MIN, PPM_MIN, PPM_MIN, PPM_MID, PPM_MID,
                            PPM_MID, PPM_MID, PPM_MID, PPM_MID, PPM_MID, PPM_MID,
                           };
 ////////////////////////////////////
+
+
+
+////////////// Timer //////////////
 unsigned long previousMillis = 0;
 const long interval = 2000;
+///////////////////////////////////
 
+int POWER = 0;
 int receiver;
 int educ = 0;
 
 void setup()
 {
   Serial.begin(9600);
-  HC06.begin(9600);
-  HC06.write("AT+NAME CyclopeTX");
 
   ///////////// NRF24L01 /////////////
   randomSeed((analogRead(A4) & 0x1F) | (analogRead(A5) << 5));

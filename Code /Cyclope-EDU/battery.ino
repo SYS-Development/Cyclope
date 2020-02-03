@@ -15,6 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Cyclope-edu code. If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************/
+float V_Batt = 0.0;
 
 void battery() {
   unsigned long currentMillis = millis();
